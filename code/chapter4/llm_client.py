@@ -2,6 +2,7 @@ import os
 from openai import OpenAI
 from dotenv import load_dotenv
 from typing import List, Dict
+from volcenginesdkarkruntime import Ark
 
 # 加载 .env 文件中的环境变量
 load_dotenv()
@@ -18,12 +19,13 @@ class HelloAgentsLLM:
         self.model = model or os.getenv("LLM_MODEL_ID")
         apiKey = apiKey or os.getenv("LLM_API_KEY")
         baseUrl = baseUrl or os.getenv("LLM_BASE_URL")
-        timeout = timeout or int(os.getenv("LLM_TIMEOUT", 60))
+        timeout = timeout or int(os.getenv("LLM_TIMEOUT", 1800))
         
         if not all([self.model, apiKey, baseUrl]):
             raise ValueError("模型ID、API密钥和服务地址必须被提供或在.env文件中定义。")
 
-        self.client = OpenAI(api_key=apiKey, base_url=baseUrl, timeout=timeout)
+        # self.client = OpenAI(api_key=apiKey, base_url=baseUrl, timeout=timeout)
+        self.client = Ark(api_key=apiKey, base_url=baseUrl, timeout=timeout)
 
     def think(self, messages: List[Dict[str, str]], temperature: float = 0) -> str:
         """
@@ -36,6 +38,9 @@ class HelloAgentsLLM:
                 messages=messages,
                 temperature=temperature,
                 stream=True,
+                thinking={
+                    "type": "enabled",
+                },
             )
             
             # 处理流式响应

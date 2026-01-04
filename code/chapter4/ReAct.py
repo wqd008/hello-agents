@@ -33,7 +33,7 @@ class ReActAgent:
     def run(self, question: str):
         self.history = []
         current_step = 0
-
+        print(f"🤖 开始解决问题: {question}")
         while current_step < self.max_steps:
             current_step += 1
             print(f"\n--- 第 {current_step} 步 ---")
